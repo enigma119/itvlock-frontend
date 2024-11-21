@@ -1,0 +1,101 @@
+<div class="absolute inset-0 flex min-w-0 flex-col overflow-y-auto" cdkScrollable>
+    <!-- Header -->
+    <div class="dark relative flex-0 overflow-hidden bg-gray-800 px-4 py-8 sm:p-16">
+        <!-- Background -->
+        <!-- Rings -->
+        <!-- prettier-ignore -->
+        <svg class="absolute inset-0 pointer-events-none" viewBox="0 0 960 540" width="100%" height="100%"
+            preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+            <g class="text-gray-700 opacity-25" fill="none" stroke="currentColor" stroke-width="100">
+                <circle r="234" cx="196" cy="23"></circle>
+                <circle r="234" cx="790" cy="491"></circle>
+            </g>
+        </svg>
+        <div class="relative z-10 flex flex-col items-center">
+            <h2 class="text-xl font-semibold">Liste des biens</h2>
+            <div class="mt-1 text-center text-4xl font-extrabold leading-tight tracking-tight sm:text-7xl">
+                Quel bien souhaitez-vous ajouter ?
+            </div>
+            <div class="text-secondary mt-6 max-w-2xl text-center tracking-tight sm:text-2xl">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia, amet, veniam a beatae ullam nisi,
+                tempora maiores aliquam expedita vitae explicabo ipsam ?
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex flex-auto p-6 sm:p-10">
+        <div class="mx-auto flex w-full max-w-xs flex-auto flex-col sm:max-w-5xl">
+            <!-- Filters -->
+            <div class="flex w-full max-w-xs flex-col items-center justify-between sm:max-w-none sm:flex-row">
+                <mat-form-field class="mt-4 w-full sm:ml-4 sm:mt-0 sm:w-72" [subscriptSizing]="'dynamic'">
+                    <mat-icon matPrefix class="icon-size-5" [svgIcon]="'heroicons_solid:magnifying-glass'"></mat-icon>
+                    <input (input)="filterByQuery(query.value)" placeholder="Rechercher par nom ou adresse" matInput #query />
+                </mat-form-field>
+                <button mat-flat-button [color]="'primary'" (click)="openAddPropertyDialog()">
+                    <mat-icon [svgIcon]="'heroicons_solid:plus'"></mat-icon>
+                    Ajouter un bien
+                </button>
+            </div>
+            <!-- Courses -->
+            <div>
+                <!-- Debug info -->
+
+                <div class="mt-8 grid grid-cols-1 gap-8 sm:mt-10 sm:grid-cols-2 lg:grid-cols-3" *ngIf="!isLoading">
+                    @for (property of properties; track trackByFn($index, property)) {
+                    <!-- Course -->
+                    <div class="bg-card flex h-80 flex-col overflow-hidden rounded-2xl shadow">
+                        <div class="flex flex-col p-6">
+                            <div class="flex items-center justify-end">
+
+                                <div class="flex items-center">
+                                    <mat-icon class="text-green-600 icon-size-5" [svgIcon]="
+                                                'heroicons_solid:check-badge'
+                                            " [matTooltip]="
+                                                'You completed this course at least once'
+                                            "></mat-icon>
+                                </div>
+                            </div>
+                            <!-- Property name & address -->
+                            <div class="mt-4 text-lg font-medium">
+                                {{ property.name }}
+                            </div>
+                            <div class="text-secondary mt-0.5 line-clamp-2 overflow-hidden">
+                                {{ property.address }}
+                            </div>
+                            <div class="my-6 h-1 w-12 border-t-2"></div>
+                            <!-- Course time -->
+                            <div class="text-secondary flex items-center text-md leading-5">
+                                <mat-icon class="text-hint icon-size-5" [svgIcon]="'heroicons_solid:inbox-stack'"></mat-icon>
+                                <div class="ml-1.5">
+                                    {{ property.totalRooms }} chambres
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Footer -->
+                        <div class="flex mt-auto w-full flex-col">
+                            <!-- Course launch button -->
+                            <div class="bg-gray-50 px-6 py-4 text-right dark:bg-transparent">
+                                <a mat-stroked-button [routerLink]="['rooms', property._id]">
+                                    <span class="inline-flex items-center">
+                                        Voir détails
+                                        <mat-icon class="ml-1.5 icon-size-5"
+                                            [svgIcon]="'heroicons_solid:arrow-small-right'"></mat-icon>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                </div>
+                <div class="flex flex-auto flex-col items-center justify-center bg-gray-100 dark:bg-transparent"
+                    *ngIf="isLoading">
+                    <!-- <mat-icon class="icon-size-24" [svgIcon]="'heroicons_outline:document-search'"></mat-icon> -->
+                    <div class="text-secondary mt-6 text-2xl font-semibold tracking-tight">
+                        Pas de biens trouvés !
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

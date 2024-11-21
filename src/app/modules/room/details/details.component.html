@@ -1,0 +1,102 @@
+<div class="flex flex-auto flex-col p-6 md:p-8">
+    <!-- Close button -->
+    <div class="flex items-center justify-end">
+        <a mat-icon-button [routerLink]="['../../']">
+            <mat-icon [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
+        </a>
+    </div>
+
+    <!-- Preview -->
+    <div class="mt-8 ">
+        <!-- <div
+            class="flex h-full items-center justify-center rounded-lg border bg-gray-50 dark:bg-card"
+        >
+
+            @if (room?.type !== 'folder') {
+                <mat-icon
+                    class="text-hint icon-size-24"
+                    [svgIcon]="'heroicons_outline:document'"
+                ></mat-icon>
+            }
+        </div> -->
+    </div>
+
+    <!-- Name & Type -->
+    <div class="mt-8 flex flex-col items-start">
+        <div class="text-xl font-medium">{{ room.roomName }}</div>
+        <div
+            class="mt-1 rounded px-1.5 text-sm font-semibold leading-5 text-white"
+            [class.bg-red-600]="room.status === 'maintenance'"
+            [class.bg-blue-600]="room.status === 'occupied'"
+            [class.bg-green-600]="room.status === 'available'"
+        >
+            @if (room.status === 'maintenance') {
+                Maintenance
+            }
+            @if (room.status === 'occupied') {
+                Occupée
+            }
+            @if (room.status === 'available') {
+                Disponible
+            }
+        </div>
+    </div>
+
+    <!-- Information -->
+    <div class="mt-8 text-lg font-medium">Information</div>
+    <div class="mt-4 flex flex-col divide-y border-b border-t font-medium">
+        <div class="flex items-center justify-between py-3">
+            <div class="text-secondary">Numéro</div>
+            <div>{{ room.roomNumber }}</div>
+        </div>
+        <div class="flex items-center justify-between py-3">
+            <div class="text-secondary">Créé le</div>
+            <div>{{ room.createdAt | date: 'dd/MM/yyyy' }}</div>
+        </div>
+        <div class="flex items-center justify-between py-3">
+            <div class="text-secondary">Modifié le</div>
+            <div>{{ room.updatedAt | date: 'dd/MM/yyyy' }}</div>
+        </div>
+        <div class="flex items-center justify-between py-3">
+            <div class="text-secondary">Occupé par</div>
+            <div>{{ room?.currentGuest?.fullName || 'N/A' }}</div>
+        </div>
+        <!-- @if (room.contents) {
+            <div class="flex items-center justify-between py-3">
+                <div class="text-secondary">Contents</div>
+                <div>{{ item.contents }}</div>
+            </div>
+        } -->
+    </div>
+
+    <!-- Description -->
+    <div class="mt-8 flex items-center justify-between">
+        <div class="text-lg font-medium">Clé</div>
+        <button mat-icon-button [matTooltip]="'Modifier la clé'">
+            <mat-icon
+                class="icon-size-5"
+                [svgIcon]="'heroicons_solid:pencil'"
+            ></mat-icon>
+        </button>
+    </div>
+    <div class="mt-2 flex border-t">
+        <div class="py-3">
+            @if (room.smartLock) {
+                <div>{{ room.smartLock }}</div>
+            }
+            @if (!room.smartLock) {
+                <div class="text-secondary italic">
+                    XXXXXXXXXXX
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="mt-8 grid w-full grid-cols-2 gap-4">
+        <button class="flex-auto" mat-flat-button [color]="'primary'">
+            Modifier
+        </button>
+        <button class="flex-auto" mat-stroked-button>Supprimer</button>
+    </div>
+</div>

@@ -1,0 +1,137 @@
+<div class="absolute inset-0 flex min-w-0 flex-col overflow-hidden">
+    <mat-drawer-container class="bg-card h-full flex-auto dark:bg-transparent" (backdropClick)="onBackdropClicked()">
+        <!-- Drawer -->
+        <mat-drawer class="w-full dark:bg-gray-900 sm:w-100" [mode]="drawerMode" [opened]="false" [position]="'end'"
+            [disableClose]="true" #matDrawer>
+            <router-outlet></router-outlet>
+        </mat-drawer>
+
+        <mat-drawer-content class="flex flex-col bg-gray-100 dark:bg-transparent">
+            <!-- Main -->
+            <div class="flex flex-auto flex-col">
+                <!-- Header -->
+                <div
+                    class="bg-card flex flex-col items-start border-b p-6 dark:bg-transparent sm:flex-row sm:items-center sm:justify-between sm:py-12 md:px-8">
+                    <!-- Title -->
+                    <div>
+                        <div class="text-4xl font-extrabold leading-none tracking-tight">
+                            Liste des chambres
+                            <!-- Legend -->
+                             <div class="flex gap-3 mt-2">
+                                <span class="flex items-center text-secondary text-base font-medium">
+                                    <mat-icon class="text-green-600 icon-size-5" [svgIcon]="'heroicons_solid:check-badge'"></mat-icon>
+                                    Disponible
+                                </span>
+                                <span class="flex items-center text-secondary text-base font-medium">
+                                    <mat-icon class="text-red-600 icon-size-5" [svgIcon]="'heroicons_solid:check-badge'"></mat-icon>
+                                    Maintenance
+                                </span>
+                                <span class="flex items-center text-secondary text-base font-medium">
+                                    <mat-icon class="text-blue-600 icon-size-5" [svgIcon]="'heroicons_solid:check-badge'"></mat-icon>
+                                    Occupée
+                                </span>
+                             </div>
+
+                        </div>
+                        <div class="text-secondary mt-0.5 flex items-center font-medium">
+                            @if (!rooms.length) {
+                            {{ rooms.length }} chambres
+                            }
+                        </div>
+                    </div>
+                    <!-- Actions -->
+                    <div class="mt-4 sm:mt-0">
+                        <!-- Upload button -->
+                        <button mat-flat-button [color]="'primary'" (click)="openAddRoomDialog()">
+                            <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                            <span class="ml-2 mr-1">Ajouter une chambre</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Items list -->
+                @if (
+                rooms &&
+                (rooms.length > 0)
+                ) {
+                <div class="space-y-8 p-6 md:p-8">
+                    <!-- Files -->
+                    @if (rooms.length > 0) {
+                    <div>
+                        <div class="font-medium">Chambres</div>
+                        <div class="-m-2 mt-2 flex flex-wrap">
+                            @for (
+                            room of rooms;
+                            track trackByFn($index, room)
+                            ) {
+                            <a class="bg-card m-2 flex h-44 w-40 cursor-pointer flex-col rounded-2xl p-4 shadow">
+                                <div class="aspect-[9/6] relative">
+                                    @if (room.status === 'available') {
+                                    <mat-icon class="absolute top-[-8px] left-[-10px] text-green-600 icon-size-7"
+                                        [svgIcon]="'heroicons_solid:check-badge'"></mat-icon>
+                                    } @else if (room.status === 'maintenance') {
+                                    <mat-icon class="absolute top-[-8px] left-[-10px] text-red-600 icon-size-7"
+                                        [svgIcon]="'heroicons_solid:check-badge'"></mat-icon>
+                                    } @else {
+                                    <mat-icon class="absolute top-[-8px] left-[-10px] text-blue-600 icon-size-7"
+                                        [svgIcon]="'heroicons_solid:check-badge'"></mat-icon>
+                                    }
+                                    <div class="absolute top-[-14px] right-[-14px]">
+                                        <button mat-icon-button [matMenuTriggerFor]="roomMenu">
+                                            <mat-icon [svgIcon]="'heroicons_outline:ellipsis-vertical'"></mat-icon>
+                                        </button>
+                                        <mat-menu #roomMenu="matMenu">
+                                            <button mat-menu-item (click)="openEditRoomDialog(room)">
+                                                <mat-icon [svgIcon]="'heroicons_outline:pencil'"></mat-icon>
+                                                <span>Modifier</span>
+                                            </button>
+                                            <button mat-menu-item (click)="addDevice(room)">
+                                                <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                                                <span>Ajouter un appareil</span>
+                                            </button>
+                                            <button mat-menu-item (click)="viewDevices(room)">
+                                                <mat-icon [svgIcon]="'heroicons_outline:computer-desktop'"></mat-icon>
+                                                <span>Voir les appareils</span>
+                                            </button>
+                                        </mat-menu>
+                                    </div>
+                                    <div class="flex h-full items-center justify-center mt-4" (click)="setRoom(room)">
+                                        <!-- Icons -->
+                                        <div class="relative">
+                                            <mat-icon class="text-hint opacity-50 icon-size-14" [svgIcon]="
+                                                                'heroicons_solid:document'
+                                                            "></mat-icon>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-auto flex-col justify-center text-center text-sm font-medium">
+                                    <div class="truncate">
+                                        {{ room.roomName }}
+                                    </div>
+                                    @if (room.roomNumber) {
+                                    <div class="text-secondary truncate">
+                                        № {{ room.roomNumber }}
+                                    </div>
+                                    }
+                                </div>
+                            </a>
+                            }
+                        </div>
+                    </div>
+                    }
+                </div>
+                }
+                @if (!rooms.length) {
+                <div class="flex flex-auto flex-col items-center justify-center bg-gray-100 dark:bg-transparent">
+                    <mat-icon class="icon-size-24" [svgIcon]="'heroicons_outline:folder-open'"></mat-icon>
+                    <div class="text-secondary mt-4 text-2xl font-semibold tracking-tight">
+                        Il n'y a pas de chambres!
+                    </div>
+                </div>
+                }
+
+                <!-- No items template -->
+            </div>
+        </mat-drawer-content>
+    </mat-drawer-container>
+</div>

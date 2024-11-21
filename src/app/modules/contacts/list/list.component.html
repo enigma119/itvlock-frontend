@@ -1,0 +1,163 @@
+<div class="flex flex-wrap w-full max-w-screen-2xl mx-auto">
+    <!-- Title and action buttons -->
+    <div class="bg-card w-full flex flex-col items-start border-b p-6 dark:bg-transparent sm:flex-row sm:items-center sm:justify-between sm:py-12 md:px-8">
+        <div class="text-4xl font-extrabold leading-none tracking-tight">
+            Liste des membres du personnel
+        </div>
+        <div class="flex gap-3">
+            <button mat-flat-button class="bg-primary text-white" (click)="openAddStaffDialog()">
+                <mat-icon [svgIcon]="'heroicons_solid:plus'"></mat-icon>
+                <span>Ajouter un membre du personnel</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- List Users -->
+    <div class="flex flex-col p-6 mx-6 mt-6 bg-card shadow rounded-2xl overflow-hidden w-full">
+        <!-- Filter and Search -->
+        <div class="flex w-full gap-12 shadow-sm bg-gray-100 p-5 rounded-md">
+            <div class="sm:col-span-1 flex w-full flex-1">
+                <form [formGroup]="filterForm" class="w-full">
+                    <div class="flex flex-row justify-end gap-3">
+                        <mat-form-field class="w-1/4 mt-1">
+                            <mat-label class="mt-3">Rechercher un utilisateur </mat-label>
+                            <input
+                                matInput
+                                type="text"
+                                placeholder="Nom complet, email, téléphone"
+                                [formControlName]="'searchValue'" />
+                        </mat-form-field>
+
+                        <mat-form-field class="w-1/4 mt-1">
+                            <mat-label> Filtrer par role </mat-label>
+                            <mat-select [formControlName]="'role'">
+                                <mat-option [value]="null">
+                                    Tous les rôles
+                                </mat-option>
+                                @for (userType of userTypesList; track userType.role) {
+                                    <mat-option [value]="userType.role" (click)="doFilter()">
+                                        {{ userType.label }}
+                                    </mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+
+                        <div class="flex justify-end gap-3 items-center w-2/4">
+                            <button
+                                mat-flat-button
+                                class="bg-red-400 rounded-md min-h-12 mt-2"
+                                [disabled]="filterForm.disabled"
+                                (click)="resetFilterForm()">
+                                <span>Réinitialiser</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="flex flex-col text-center flex-auto mt-8 overflow-x-auto">
+            <table class="min-w-240 overflow-y-visible" mat-table [dataSource]="dataSource">
+
+                <!-- Avatar -->
+                <ng-container matColumnDef="avatar">
+                    <th mat-header-cell class="border text-center font-semibold text-black" *matHeaderCellDef>Avatar</th>
+                    <td mat-cell class="text-center border" *matCellDef="let user">
+                        @if (user?.avatar && user.avatar !== '' && user.avatar !== null) {
+                            <img
+                                [src]="user.avatar"
+                                alt="avatar"
+                                class="w-10 h-10 rounded-full"
+                            />
+                        } @else {
+                            <mat-icon class="w-10 h-10 text-gray-400">account_circle</mat-icon>
+                        }
+                    </td>
+                </ng-container>
+
+                <!-- CreatedAt -->
+                <ng-container matColumnDef="createdAt">
+                    <th mat-header-cell class="border text-center font-semibold text-black" *matHeaderCellDef>Date de création</th>
+                    <td mat-cell class="text-center border" *matCellDef="let user">
+                        <span class="">
+                            {{ user.createdAt | date: 'dd/MM/yyyy' }}
+                        </span>
+                    </td>
+                </ng-container>
+
+                <!-- FullName -->
+                <ng-container matColumnDef="fullName">
+                    <th mat-header-cell class="border text-center font-semibold text-black" *matHeaderCellDef>Nom complet</th>
+                    <td mat-cell class="text-center border" *matCellDef="let user">
+                        <span class=""> {{ user?.fullName }} </span>
+                    </td>
+                </ng-container>
+
+                <!-- Emailt -->
+                <ng-container matColumnDef="email">
+                    <th mat-header-cell class="border text-center font-semibold text-black" *matHeaderCellDef>Email</th>
+                    <td mat-cell class="text-center border" *matCellDef="let user">{{ user?.email }}</td>
+                </ng-container>
+
+                <!-- Phone -->
+                <ng-container matColumnDef="phoneNumber">
+                    <th mat-header-cell class="border text-center font-semibold text-black" *matHeaderCellDef>Téléphone</th>
+                    <td mat-cell class="text-center border" *matCellDef="let user">{{ user?.phoneNumbers[0]?.phoneNumber }}</td>
+                </ng-container>
+
+                <!-- address -->
+                <ng-container matColumnDef="address">
+                    <th mat-header-cell class="border text-center font-semibold text-black" *matHeaderCellDef>Adresse</th>
+                    <td mat-cell class="text-center border" *matCellDef="let user">{{ user?.address }}</td>
+                </ng-container>
+
+                <!-- Details -->
+                <ng-container matColumnDef="details">
+                    <th mat-header-cell class="border text-center font-semibold text-black" *matHeaderCellDef>Actions</th>
+                    <td mat-cell class="text-center border" *matCellDef="let user">
+                        <button mat-icon-button [matMenuTriggerFor]="menu">
+                            <mat-icon [svgIcon]="'heroicons_solid:ellipsis-horizontal'" class="icon-size-5 text-black"></mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu"
+                                 [overlapTrigger]="false"
+                                 xPosition="before"
+                                 yPosition="below">
+                            <button mat-menu-item (click)="openDetails(user)">
+                                <mat-icon [svgIcon]="'heroicons_solid:eye'" class="text-green-500 icon-size-5"></mat-icon>
+                                <span>Voir détails</span>
+                            </button>
+
+                            <button mat-menu-item (click)="editUser(user)">
+                                <mat-icon [svgIcon]="'heroicons_solid:pencil'" class="text-blue-500 icon-size-5"></mat-icon>
+                                <span>Modifier</span>
+                            </button>
+
+                            <button mat-menu-item (click)="deleteUser(user)">
+                                <mat-icon [svgIcon]="'heroicons_solid:trash'" class="text-red-500 icon-size-5"></mat-icon>
+                                <span>Supprimer</span>
+                            </button>
+                        </mat-menu>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="staffTableColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: staffTableColumns"></tr>
+            </table>
+            <mat-paginator
+                (page)="onPageChange($event)"
+                [length]="usersCount || 0"
+                [pageSize]="pageSize"
+                [pageSizeOptions]="pageSizeOptions"
+                showFirstLastButtons
+                aria-label="Sélectionner la page des éléments périodiques">
+            </mat-paginator>
+        </div>
+    </div>
+
+    <!-- No Users -->
+    <ng-template #noUserFoundTemplate>
+        <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">
+            Il n'y a aucun utilisateur!
+        </div>
+    </ng-template>
+</div>
