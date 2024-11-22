@@ -30,6 +30,8 @@ import { RoomService } from '../room.service';
 import { AddRoomComponent } from '../add/add.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
+import { CheckInDialogComponent } from 'app/modules/guest/check-in.component';
 
 @Component({
     selector: 'file-manager-list',
@@ -46,6 +48,7 @@ import { MatMenuModule } from '@angular/material/menu';
         MatTooltipModule,
         MatDialogModule,
         MatMenuModule,
+        MatDividerModule
     ],
 })
 export class RoomListComponent implements OnInit, OnDestroy {
@@ -181,5 +184,14 @@ export class RoomListComponent implements OnInit, OnDestroy {
     setRoom(room: Room): void {
         this._roomService.setRoom(room);
         this._router.navigate(['./details', room._id], { relativeTo: this._activatedRoute });
+    }
+
+    openCheckInDialog(room: Room): void {
+        this._matDialog.open(CheckInDialogComponent, {
+            height: '80vh',
+            data: { room },
+        }).afterClosed().subscribe((result) => {
+            this.fetchAllRooms();
+        });
     }
 }

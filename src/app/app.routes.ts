@@ -94,6 +94,7 @@ export const appRoutes: Route[] = [
                     { path: 'users', loadChildren: () => import('app/modules/contacts/contacts.routes') },
                     { path: 'rooms', loadChildren: () => import('app/modules/room/room.routes') },
                     { path: 'devices', loadChildren: () => import('app/modules/devices/devices.routes') },
+                    { path: 'guests', loadChildren: () => import('app/modules/guest/guest.routes') },
                 ]
             },
 

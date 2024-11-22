@@ -28,6 +28,7 @@ export interface Room {
     smartLock?: Record<string, any>;
     currentGuest?: any;
     currentEKey?: any;
+    currentPasscode?: string;
     price?: number;
     isActive?: boolean;
     createdAt?: any;

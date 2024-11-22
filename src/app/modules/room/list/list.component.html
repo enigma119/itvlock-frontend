@@ -80,18 +80,28 @@
                                         <button mat-icon-button [matMenuTriggerFor]="roomMenu">
                                             <mat-icon [svgIcon]="'heroicons_outline:ellipsis-vertical'"></mat-icon>
                                         </button>
-                                        <mat-menu #roomMenu="matMenu">
-                                            <button mat-menu-item (click)="openEditRoomDialog(room)">
-                                                <mat-icon [svgIcon]="'heroicons_outline:pencil'"></mat-icon>
-                                                <span>Modifier</span>
+                                        <mat-menu #roomMenu="matMenu" yPosition="below" xPosition="after">
+                                            <button mat-menu-item (click)="openOccupantInfoDialog(room)">
+                                                <span class="text-sm">Infos Occupant</span>
                                             </button>
-                                            <button mat-menu-item (click)="addDevice(room)">
-                                                <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
-                                                <span>Ajouter un appareil</span>
+                                            <button mat-menu-item (click)="openCheckInDialog(room)">
+                                                <span class="text-sm">Check in</span>
+                                            </button>
+                                            <button mat-menu-item (click)="openCheckOutDialog(room)">
+                                                <span class="text-sm">Check out</span>
+                                            </button>
+                                            <button mat-menu-item (click)="openModifyCheckOutDialog(room)">
+                                                <span class="text-sm">Modifier check out</span>
+                                            </button>
+                                            <mat-divider></mat-divider>
+                                            <button mat-menu-item (click)="openRoomInfoDialog(room)">
+                                                <span class="text-sm">Infos chambre</span>
+                                            </button>
+                                            <button mat-menu-item (click)="openRoomHistoryDialog(room)">
+                                                <span class="text-sm">Historique</span>
                                             </button>
                                             <button mat-menu-item (click)="viewDevices(room)">
-                                                <mat-icon [svgIcon]="'heroicons_outline:computer-desktop'"></mat-icon>
-                                                <span>Voir les appareils</span>
+                                                <span class="text-sm">Voir les appareils</span>
                                             </button>
                                         </mat-menu>
                                     </div>
